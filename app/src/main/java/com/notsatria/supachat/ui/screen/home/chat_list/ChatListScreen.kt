@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.Search
@@ -15,18 +17,36 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.notsatria.supachat.data.model.Conversation
 import com.notsatria.supachat.data.model.UserProfile
 import com.notsatria.supachat.ui.theme.SupachatTheme
 
 @Composable
-fun ChatListRoute(modifier: Modifier = Modifier, navigateToChatRoom: () -> Unit) {
+fun ChatListRoute(
+    modifier: Modifier = Modifier,
+    navigateToChatRoom: (String) -> Unit,
+    viewModel: ChatListViewModel = hiltViewModel()
+) {
+    val conversations by viewModel.conversations.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadConversations()
+    }
+
     ChatListScreen(
         modifier,
-        profile = UserProfile(id = "", username = "username", avatarUrl = null),
-        navigateToChatRoom = navigateToChatRoom
+        conversations = conversations,
+        profile = UserProfile(id = "", username = "username", avatar_url = null),
+        navigateToChatRoom = { conversationId -> navigateToChatRoom(conversationId) }
     )
 }
 
@@ -34,8 +54,9 @@ fun ChatListRoute(modifier: Modifier = Modifier, navigateToChatRoom: () -> Unit)
 @Composable
 fun ChatListScreen(
     modifier: Modifier = Modifier,
+    conversations: List<Conversation> = listOf(),
     profile: UserProfile,
-    navigateToChatRoom: () -> Unit = {}
+    navigateToChatRoom: (String) -> Unit = {}
 ) {
     Scaffold(modifier, topBar = {
         TopAppBar(title = {
@@ -55,9 +76,15 @@ fun ChatListScreen(
                 .padding(p)
                 .fillMaxSize()
         ) {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(4) {
-                    ChatRow(profile = profile, onClick = navigateToChatRoom)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 12.dp)
+            ) {
+                items(conversations) {
+                    ChatRow(
+                        profile = profile,
+                        onClick = { navigateToChatRoom(it.id) })
                 }
             }
         }
@@ -68,6 +95,16 @@ fun ChatListScreen(
 @Composable
 fun ChatListScreenPreview(modifier: Modifier = Modifier) {
     SupachatTheme {
-        ChatListScreen(profile = UserProfile(id = "", username = "username", avatarUrl = null))
+        ChatListScreen(
+            conversations = listOf(
+                Conversation(
+                    id = "",
+                    user1_id = "",
+                    user2_id = "",
+                    updated_at = "",
+                    created_at = ""
+                )
+            ), profile = UserProfile(id = "", username = "username", avatar_url = null)
+        )
     }
 }

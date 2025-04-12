@@ -28,7 +28,6 @@ fun SupachatApp(
     navController: NavHostController = rememberNavController()
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold { p ->
         NavHost(navController = navController, startDestination = Screen.Register.route) {
@@ -49,9 +48,17 @@ fun SupachatApp(
                 type = NavType.StringType
             })) { backStackEntry ->
                 val email = backStackEntry.arguments?.getString("email") ?: ""
-                OTPVerificationRoute(modifier = modifier.padding(p), navigateBack = {
-                    navController.navigateUp()
-                }, email = email)
+                OTPVerificationRoute(
+                    modifier = modifier.padding(p),
+                    navigateBack = {
+                        navController.navigateUp()
+                    }, navigateToChatList = {
+                        navController.navigateAndClearBackStack(
+                            Screen.ChatList.route,
+                            popUpTarget = Screen.OTPVerification.route
+                        )
+                    }, email = email
+                )
             }
 
             composable(Screen.Login.route) {
@@ -69,13 +76,18 @@ fun SupachatApp(
             }
 
             composable(Screen.ChatList.route) {
-                ChatListRoute(modifier.padding(p), navigateToChatRoom = {
-                    navController.navigate(Screen.ChatRoom.route)
+                ChatListRoute(modifier.padding(p), navigateToChatRoom = { conversationId ->
+                    navController.navigate(Screen.ChatRoom.createRoute(conversationId))
                 })
             }
 
-            composable(Screen.ChatRoom.route) {
-                ChatRoomRoute(modifier.padding(p))
+            composable(Screen.ChatRoom.route, arguments = listOf(navArgument("conversationId") {
+                type = NavType.StringType
+            })) { backStackEntry ->
+                val conversationId = backStackEntry.arguments?.getString("conversationId") ?: ""
+                ChatRoomRoute(modifier.padding(p), navigateBack = {
+                    navController.navigateUp()
+                })
             }
         }
     }

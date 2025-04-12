@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,6 +50,7 @@ import kotlinx.coroutines.delay
 fun OTPVerificationRoute(
     modifier: Modifier = Modifier,
     navigateBack: () -> Unit = {},
+    navigateToChatList: () -> Unit = {},
     email: String = "",
     viewModel: OTPVerificationViewModel = hiltViewModel()
 ) {
@@ -102,11 +101,7 @@ fun OTPVerificationRoute(
             is Resource.Success -> {
                 isLoading = false
                 isOtpError.value = false
-                Toast.makeText(
-                    context,
-                    (verificationState as Resource.Success).data,
-                    Toast.LENGTH_SHORT
-                ).show()
+                navigateToChatList()
             }
 
             is Resource.Error -> {

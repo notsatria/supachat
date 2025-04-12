@@ -29,8 +29,8 @@ fun AvatarImage(
     size: Int = 24,
     profile: UserProfile
 ) {
-    if (profile.avatarUrl != null) AsyncImage(
-        profile.avatarUrl,
+    if (profile.avatar_url != null) AsyncImage(
+        profile.avatar_url,
         "Avatar",
         contentScale = ContentScale.Crop,
         placeholder = BrushPainter(
@@ -70,7 +70,7 @@ fun AvatarImagePreview(
     profile: UserProfile = UserProfile(
         id = "",
         username = "username",
-        avatarUrl = null
+        avatar_url = null
     )
 ) {
     SupachatTheme {

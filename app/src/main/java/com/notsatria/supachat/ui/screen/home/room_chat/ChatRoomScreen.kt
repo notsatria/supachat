@@ -43,16 +43,26 @@ import com.notsatria.supachat.data.model.UserProfile
 import com.notsatria.supachat.ui.theme.SupachatTheme
 
 @Composable
-fun ChatRoomRoute(modifier: Modifier = Modifier, viewModel: ChatViewModel = hiltViewModel()) {
+fun ChatRoomRoute(
+    modifier: Modifier = Modifier,
+    navigateBack: () -> Unit,
+    viewModel: ChatViewModel = hiltViewModel()
+) {
     val messages by viewModel.messages.collectAsState()
 
     LaunchedEffect(messages) {
         d("Message: $messages")
     }
 
-    ChatRoomScreen(modifier, messages, onMessageClicked = { message ->
-        viewModel.sendMessage(message)
-    }, profile = UserProfile(id = "", username = "username", avatarUrl = null))
+    ChatRoomScreen(
+        modifier,
+        messages,
+        profile = UserProfile(id = "", username = "username", avatar_url = null),
+        navigateBack = navigateBack,
+        onMessageClicked = { message ->
+            viewModel.sendMessage(message)
+        },
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,6 +70,7 @@ fun ChatRoomRoute(modifier: Modifier = Modifier, viewModel: ChatViewModel = hilt
 fun ChatRoomScreen(
     modifier: Modifier = Modifier,
     messages: MutableList<String> = mutableStateListOf(),
+    navigateBack: () -> Unit = {},
     onMessageClicked: (String) -> Unit = {},
     profile: UserProfile
 ) {
@@ -81,7 +92,7 @@ fun ChatRoomScreen(
                         Text("Username", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                     }
                 }, navigationIcon = {
-                    IconButton(onClick = {}, modifier = Modifier.size(24.dp)) {
+                    IconButton(onClick = navigateBack, modifier = Modifier.size(24.dp)) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBackIos,
                             "Back",
@@ -139,6 +150,6 @@ fun ChatRoomScreen(
 @Composable
 fun ChatScreenPreview(modifier: Modifier = Modifier) {
     SupachatTheme {
-        ChatRoomScreen(profile = UserProfile(id = "", username = "username", avatarUrl = null))
+        ChatRoomScreen(profile = UserProfile(id = "", username = "username", avatar_url = null))
     }
 }

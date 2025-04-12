@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class UserProfile(
     val id: String,
     val username: String,
-    val avatarUrl: String?,
+    val avatar_url: String?,
 )

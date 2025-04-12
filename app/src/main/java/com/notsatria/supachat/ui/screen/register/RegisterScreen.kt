@@ -59,8 +59,10 @@ fun RegisterRoute(
             }
 
             is Resource.Success -> {
+                val user = (registerState as Resource.Success).data!!
                 isLoading.value = false
-                navigateToOTPVerificationScreen((registerState as Resource.Success).data?.email.toString())
+                viewModel.createUserProfile(user.id)
+                navigateToOTPVerificationScreen(user.email.toString())
             }
 
             is Resource.Error -> {

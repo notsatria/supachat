@@ -26,7 +26,7 @@ fun ChatRow(modifier: Modifier = Modifier, profile: UserProfile, onClick: () -> 
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .padding(vertical = 8.dp)
             .clickable {
                 onClick()
             },
@@ -60,7 +60,7 @@ fun ChatRow(modifier: Modifier = Modifier, profile: UserProfile, onClick: () -> 
 fun ChatRowPreview(modifier: Modifier = Modifier) {
     SupachatTheme {
         ChatRow(
-            profile = UserProfile(id = "", username = "username", avatarUrl = null),
+            profile = UserProfile(id = "", username = "username", avatar_url = null),
             onClick = {})
     }
 }

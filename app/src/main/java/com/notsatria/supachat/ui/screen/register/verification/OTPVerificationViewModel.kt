@@ -3,6 +3,7 @@ package com.notsatria.supachat.ui.screen.register.verification
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.notsatria.supachat.utils.Resource
+import com.notsatria.supachat.utils.dispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.OtpType
@@ -24,8 +25,14 @@ class OTPVerificationViewModel @Inject constructor(private val supabase: Supabas
     private val _resendOTPState = Channel<Resource<String>>()
     val resendOTPState = _resendOTPState.receiveAsFlow()
 
+    /**
+     * Function to verify OTP that has been sent to the user via email
+     *
+     * @param email email that is the user use
+     * @param otpCode code that need to be verified
+     */
     fun verifyOTP(email: String, otpCode: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             try {
                 d("OTP code: $otpCode")
                 _verificationState.send(Resource.Loading())
@@ -38,8 +45,13 @@ class OTPVerificationViewModel @Inject constructor(private val supabase: Supabas
         }
     }
 
+    /**
+     * Function to resend the OTP when the user are not getting the OTP code yet
+     *
+     * @param email that is the user use
+     */
     fun resendOTP(email: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             try {
                 _resendOTPState.send(Resource.Loading())
                 supabase.auth.resendEmail(OtpType.Email.SIGNUP, email = email)
@@ -49,5 +61,4 @@ class OTPVerificationViewModel @Inject constructor(private val supabase: Supabas
             }
         }
     }
-
 }
