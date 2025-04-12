@@ -120,6 +120,6 @@ fun RegisterScreen(
 @Composable
 fun RegisterScreenPreview(modifier: Modifier = Modifier) {
     SupachatTheme {
-        RegisterRoute()
+        RegisterScreen(navigateToLoginScreen = {}, onRegisterClicked = { a, b -> })
     }
 }

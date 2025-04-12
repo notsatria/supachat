@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.notsatria.supachat.navigation.Screen
+import com.notsatria.supachat.ui.screen.home.chat.ChatRoute
 import com.notsatria.supachat.ui.screen.login.LoginRoute
 import com.notsatria.supachat.ui.screen.register.RegisterRoute
 import com.notsatria.supachat.ui.theme.SupachatTheme
@@ -42,7 +43,16 @@ fun SupachatApp(
                         route = Screen.Register.route,
                         popUpTarget = Screen.Login.route
                     )
+                }, navigateToChatScreen = {
+                    navController.navigateAndClearBackStack(
+                        route = Screen.Chat.route,
+                        popUpTarget = Screen.Login.route
+                    )
                 })
+            }
+
+            composable(Screen.Chat.route) {
+                ChatRoute()
             }
         }
     }

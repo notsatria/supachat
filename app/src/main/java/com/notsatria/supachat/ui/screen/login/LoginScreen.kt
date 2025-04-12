@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,37 +42,41 @@ import kotlin.math.log
 fun LoginRoute(
     modifier: Modifier = Modifier,
     navigateToLoginScreen: () -> Unit = {},
+    navigateToChatScreen: () -> Unit = {},
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val loginState by viewModel.loginState.collectAsState(null)
     val context = LocalContext.current
 
+    LaunchedEffect(loginState) {
+        when (loginState) {
+            is Resource.Loading -> {
+                Toast.makeText(context, "Loading...", Toast.LENGTH_SHORT).show()
+            }
+
+            is Resource.Success -> {
+                Toast.makeText(context, "Login Success!", Toast.LENGTH_SHORT).show()
+                navigateToChatScreen()
+            }
+
+            is Resource.Error -> {
+                Toast.makeText(context, (loginState as Resource.Error).message, Toast.LENGTH_SHORT).show()
+            }
+
+            else -> {}
+        }
+    }
+
     LoginScreen(modifier, navigateToLoginScreen, onLoginClicked = { email, password ->
         viewModel.login(email, password)
     })
-
-    when (loginState) {
-        is Resource.Loading -> {
-            Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
-        }
-
-        is Resource.Success -> {
-            Toast.makeText(context, "Berhasil", Toast.LENGTH_SHORT).show()
-        }
-
-        is Resource.Error<*> -> {
-            Toast.makeText(context, "Gagal", Toast.LENGTH_SHORT).show()
-        }
-
-        else -> {}
-    }
 }
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
     navigateToLoginScreen: () -> Unit,
-    onLoginClicked: (String, String) -> Unit
+    onLoginClicked: (String, String) -> Unit,
 ) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }

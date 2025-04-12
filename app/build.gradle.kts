@@ -91,5 +91,12 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
     // Extended icon
-    implementation (libs.androidx.material.icons.extended)
+    implementation(libs.androidx.material.icons.extended)
+
+    // Logging
+    implementation(libs.timber)
+
+    // Coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 }
