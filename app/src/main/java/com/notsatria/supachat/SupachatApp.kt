@@ -12,7 +12,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.notsatria.supachat.navigation.Screen
-import com.notsatria.supachat.ui.screen.home.chat.ChatRoute
+import com.notsatria.supachat.ui.screen.home.chat_list.ChatListRoute
+import com.notsatria.supachat.ui.screen.home.room_chat.ChatRoomRoute
 import com.notsatria.supachat.ui.screen.login.LoginRoute
 import com.notsatria.supachat.ui.screen.register.RegisterRoute
 import com.notsatria.supachat.ui.theme.SupachatTheme
@@ -45,14 +46,20 @@ fun SupachatApp(
                     )
                 }, navigateToChatScreen = {
                     navController.navigateAndClearBackStack(
-                        route = Screen.Chat.route,
+                        route = Screen.ChatList.route,
                         popUpTarget = Screen.Login.route
                     )
                 })
             }
 
-            composable(Screen.Chat.route) {
-                ChatRoute()
+            composable(Screen.ChatList.route) {
+                ChatListRoute(navigateToChatRoom = {
+                    navController.navigate(Screen.ChatRoom.route)
+                })
+            }
+
+            composable(Screen.ChatRoom.route) {
+                ChatRoomRoute()
             }
         }
     }

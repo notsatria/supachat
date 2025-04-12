@@ -1,4 +1,4 @@
-package com.notsatria.supachat.ui.screen.home.chat
+package com.notsatria.supachat.ui.screen.home.room_chat
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
