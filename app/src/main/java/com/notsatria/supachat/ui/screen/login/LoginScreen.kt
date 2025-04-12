@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -21,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,9 +34,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.notsatria.supachat.component.PasswordTextField
+import com.notsatria.supachat.component.SupaButton
 import com.notsatria.supachat.ui.theme.SupachatTheme
 import com.notsatria.supachat.utils.Resource
-import kotlin.math.log
 
 @Composable
 fun LoginRoute(
@@ -47,34 +47,43 @@ fun LoginRoute(
 ) {
     val loginState by viewModel.loginState.collectAsState(null)
     val context = LocalContext.current
+    val isLoading = remember { mutableStateOf(false) }
 
     LaunchedEffect(loginState) {
         when (loginState) {
             is Resource.Loading -> {
-                Toast.makeText(context, "Loading...", Toast.LENGTH_SHORT).show()
+                isLoading.value = true
             }
 
             is Resource.Success -> {
+                isLoading.value = false
                 Toast.makeText(context, "Login Success!", Toast.LENGTH_SHORT).show()
                 navigateToChatScreen()
             }
 
             is Resource.Error -> {
-                Toast.makeText(context, (loginState as Resource.Error).message, Toast.LENGTH_SHORT).show()
+                isLoading.value = false
+                Toast.makeText(context, (loginState as Resource.Error).message, Toast.LENGTH_SHORT)
+                    .show()
             }
 
             else -> {}
         }
     }
 
-    LoginScreen(modifier, navigateToLoginScreen, onLoginClicked = { email, password ->
-        viewModel.login(email, password)
-    })
+    LoginScreen(
+        modifier,
+        isLoading = isLoading,
+        navigateToLoginScreen = navigateToLoginScreen,
+        onLoginClicked = { email, password ->
+            viewModel.login(email, password)
+        })
 }
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
+    isLoading: MutableState<Boolean> = remember { mutableStateOf(false) },
     navigateToLoginScreen: () -> Unit,
     onLoginClicked: (String, String) -> Unit,
 ) {
@@ -122,12 +131,9 @@ fun LoginScreen(
                     },
                 )
                 Spacer(Modifier.height(20.dp))
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onLoginClicked(email.value, password.value) }
-                ) {
-                    Text("Login")
-                }
+                SupaButton(modifier = Modifier.fillMaxWidth(), text = "Login", isLoading = isLoading.value, onClick = {
+                    onLoginClicked(email.value, password.value)
+                })
                 Spacer(Modifier.height(20.dp))
                 Row(
                     Modifier.fillMaxWidth(),

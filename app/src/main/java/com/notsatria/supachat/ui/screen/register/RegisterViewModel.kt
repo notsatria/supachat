@@ -1,8 +1,11 @@
 package com.notsatria.supachat.ui.screen.register
 
-import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger.Companion.e
 import com.notsatria.supachat.utils.Resource
 import com.notsatria.supachat.utils.dispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,13 +23,20 @@ class RegisterViewModel @Inject constructor(private val supabase: SupabaseClient
     private val _registerState = Channel<Resource<UserInfo>>()
     val registerState = _registerState.receiveAsFlow()
 
-    fun register(email: String, password: String) {
+    var username by mutableStateOf("")
+        private set
+    var email by mutableStateOf("")
+        private set
+    var password by mutableStateOf("")
+        private set
+
+    fun register() {
         viewModelScope.launch(dispatcher) {
             try {
                 _registerState.send(Resource.Loading())
                 val user = supabase.auth.signUpWith(Email) {
-                    this.email = email
-                    this.password = password
+                    this.email = this@RegisterViewModel.email
+                    this.password = this@RegisterViewModel.password
                 }
 
                 if (user != null) {
@@ -34,8 +44,20 @@ class RegisterViewModel @Inject constructor(private val supabase: SupabaseClient
                 }
             } catch (e: Exception) {
                 _registerState.send(Resource.Error(e.message.toString()))
-                Log.e("RegisterViewModel", "Error on register: ${e.message}")
+                e("Error: ${e.message}")
             }
         }
+    }
+
+    fun updateUsername(value: String) {
+        username = value
+    }
+
+    fun updateEmail(value: String) {
+        email = value
+    }
+
+    fun updatePassword(value: String) {
+        password = value
     }
 }

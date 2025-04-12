@@ -5,4 +5,7 @@ sealed class Screen(val route: String) {
     data object Login : Screen("login")
     data object ChatRoom : Screen("chat_room")
     data object ChatList : Screen("chat_list")
+    data object OTPVerification : Screen("otp_verification/{email}") {
+        fun createRoute(email: String) = "otp_verification/$email"
+    }
 }
