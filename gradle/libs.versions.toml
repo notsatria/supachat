@@ -9,6 +9,7 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 kotlinxSerializationJson = "1.8.0"
 ktorClientAndroid = "3.1.2"
+supabase = "3.1.4"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.8.0"
 composeBom = "2024.09.00"
@@ -16,11 +17,12 @@ hiltAndroid = "2.51.1"
 hiltNavigationCompose = "1.2.0"
 devtoolsKsp = "2.0.20-1.0.25"
 timber = "5.0.1"
+datastorePreferences = "1.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
-bom = { module = "io.github.jan-tennert.supabase:bom", version.ref = "ktorClientAndroid" }
+supabase-bom = { module = "io.github.jan-tennert.supabase:bom", version.ref = "supabase" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -37,7 +39,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
-ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktorClientAndroid" }
+ktor-client-android = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorClientAndroid" }
 postgrest-kt = { module = "io.github.jan-tennert.supabase:postgrest-kt" }
 auth-kt = { module = "io.github.jan-tennert.supabase:auth-kt" }
 realtime-kt = { module = "io.github.jan-tennert.supabase:realtime-kt" }
@@ -45,6 +47,7 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltA
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -78,7 +78,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     // supabase
-    implementation(platform(libs.bom))
+    implementation(platform(libs.supabase.bom))
     implementation(libs.ktor.client.android)
     implementation(libs.postgrest.kt)
     implementation(libs.auth.kt)
@@ -99,4 +99,7 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+
+    // Data Store
+    implementation(libs.androidx.datastore.preferences)
 }

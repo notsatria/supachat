@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.notsatria.supachat.SessionViewModel
 import com.notsatria.supachat.component.SupaButton
 import com.notsatria.supachat.ui.screen.register.OTPField
 import com.notsatria.supachat.ui.theme.SupachatTheme
@@ -52,7 +53,8 @@ fun OTPVerificationRoute(
     navigateBack: () -> Unit = {},
     navigateToChatList: () -> Unit = {},
     email: String = "",
-    viewModel: OTPVerificationViewModel = hiltViewModel()
+    viewModel: OTPVerificationViewModel = hiltViewModel(),
+    sessionViewModel: SessionViewModel = hiltViewModel()
 ) {
     val verificationState by viewModel.verificationState.collectAsState(null)
     val resendOTPState by viewModel.resendOTPState.collectAsState(null)
@@ -101,6 +103,7 @@ fun OTPVerificationRoute(
             is Resource.Success -> {
                 isLoading = false
                 isOtpError.value = false
+                sessionViewModel.setIsLoggedIn()
                 navigateToChatList()
             }
 

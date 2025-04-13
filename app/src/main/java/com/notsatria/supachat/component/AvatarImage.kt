@@ -54,6 +54,7 @@ fun AvatarImage(
             contentAlignment = Alignment.Center
         ) {
             Text(
+                modifier = Modifier.align(Alignment.Center),
                 text = if (profile.username.isNotBlank()) profile.username.first()
                     .toString() else "",
                 textAlign = TextAlign.Center,
@@ -76,6 +77,8 @@ fun AvatarImagePreview(
     SupachatTheme {
         Column {
             AvatarImage(profile = profile, size = 50)
+            AvatarImage(profile = profile, size = 50)
+            AvatarImage(profile = profile)
             AvatarImage(profile = profile, size = 50)
         }
     }

@@ -22,7 +22,12 @@ import com.notsatria.supachat.data.model.UserProfile
 import com.notsatria.supachat.ui.theme.SupachatTheme
 
 @Composable
-fun ChatRow(modifier: Modifier = Modifier, profile: UserProfile, onClick: () -> Unit) {
+fun ChatRow(
+    modifier: Modifier = Modifier,
+    profile: UserProfile,
+    onClick: () -> Unit,
+    latestMessage: String
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -31,11 +36,13 @@ fun ChatRow(modifier: Modifier = Modifier, profile: UserProfile, onClick: () -> 
                 onClick()
             },
     ) {
-        AvatarImage(profile = profile, size = 48)
+        AvatarImage(modifier = Modifier.padding(start = 12.dp), profile = profile, size = 48)
         Spacer(Modifier.width(8.dp))
         Column {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(profile.username, fontWeight = FontWeight.SemiBold)
@@ -46,7 +53,7 @@ fun ChatRow(modifier: Modifier = Modifier, profile: UserProfile, onClick: () -> 
                 )
             }
             Text(
-                "message",
+                text = latestMessage,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 fontSize = 14.sp
@@ -61,6 +68,8 @@ fun ChatRowPreview(modifier: Modifier = Modifier) {
     SupachatTheme {
         ChatRow(
             profile = UserProfile(id = "", username = "username", avatar_url = null),
-            onClick = {})
+            onClick = {},
+            latestMessage = "message"
+        )
     }
 }

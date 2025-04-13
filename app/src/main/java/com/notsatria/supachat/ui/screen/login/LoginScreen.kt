@@ -33,6 +33,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.notsatria.supachat.SessionViewModel
 import com.notsatria.supachat.component.PasswordTextField
 import com.notsatria.supachat.component.SupaButton
 import com.notsatria.supachat.ui.theme.SupachatTheme
@@ -43,7 +44,8 @@ fun LoginRoute(
     modifier: Modifier = Modifier,
     navigateToLoginScreen: () -> Unit = {},
     navigateToChatScreen: () -> Unit = {},
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
+    sessionViewModel: SessionViewModel = hiltViewModel()
 ) {
     val loginState by viewModel.loginState.collectAsState(null)
     val context = LocalContext.current
@@ -58,6 +60,7 @@ fun LoginRoute(
             is Resource.Success -> {
                 isLoading.value = false
                 Toast.makeText(context, "Login Success!", Toast.LENGTH_SHORT).show()
+                sessionViewModel.setIsLoggedIn()
                 navigateToChatScreen()
             }
 

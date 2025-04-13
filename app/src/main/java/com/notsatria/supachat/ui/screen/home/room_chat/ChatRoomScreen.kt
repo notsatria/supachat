@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.icons.automirrored.filled.Send
@@ -20,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -37,30 +39,40 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import co.touchlab.kermit.Logger.Companion.d
 import com.notsatria.supachat.component.AvatarImage
+import com.notsatria.supachat.component.UserInput
+import com.notsatria.supachat.data.model.Message
 import com.notsatria.supachat.data.model.UserProfile
 import com.notsatria.supachat.ui.theme.SupachatTheme
 
 @Composable
 fun ChatRoomRoute(
     modifier: Modifier = Modifier,
+    conversationId: String,
+    otherUserId: String,
     navigateBack: () -> Unit,
-    viewModel: ChatViewModel = hiltViewModel()
+    viewModel: ChatRoomViewModel = hiltViewModel()
 ) {
     val messages by viewModel.messages.collectAsState()
+    val otherUser by viewModel.otherUser.collectAsState()
 
-    LaunchedEffect(messages) {
-        d("Message: $messages")
+    LaunchedEffect(conversationId, otherUserId) {
+        viewModel.loadMessages(conversationId)
+        viewModel.subscribeToMessages(conversationId)
+    }
+
+    LaunchedEffect(otherUserId) {
+        viewModel.loadOtherUser(otherUserId)
     }
 
     ChatRoomScreen(
         modifier,
         messages,
-        profile = UserProfile(id = "", username = "username", avatar_url = null),
+        profile = otherUser ?: UserProfile("", "username", null),
+        currentUserId = viewModel.currentUserId.toString(),
         navigateBack = navigateBack,
         onMessageClicked = { message ->
-            viewModel.sendMessage(message)
+            viewModel.sendMessage(conversationId, message)
         },
     )
 }
@@ -69,10 +81,11 @@ fun ChatRoomRoute(
 @Composable
 fun ChatRoomScreen(
     modifier: Modifier = Modifier,
-    messages: MutableList<String> = mutableStateListOf(),
+    messages: MutableList<Message> = mutableStateListOf(),
+    profile: UserProfile,
+    currentUserId: String,
     navigateBack: () -> Unit = {},
-    onMessageClicked: (String) -> Unit = {},
-    profile: UserProfile
+    onMessageClicked: (String) -> Unit = {}
 ) {
     val message = remember { mutableStateOf("") }
     val listState = rememberLazyListState()
@@ -87,9 +100,9 @@ fun ChatRoomScreen(
                 modifier = Modifier.padding(horizontal = 12.dp),
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        AvatarImage(profile = profile)
+                        AvatarImage(profile = profile, size = 36)
                         Spacer(Modifier.width(12.dp))
-                        Text("Username", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                        Text(profile.username, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     }
                 }, navigationIcon = {
                     IconButton(onClick = navigateBack, modifier = Modifier.size(24.dp)) {
@@ -98,7 +111,7 @@ fun ChatRoomScreen(
                             "Back",
                         )
                     }
-                }, expandedHeight = 52.dp
+                }
             )
         }
     ) { p ->
@@ -114,34 +127,10 @@ fun ChatRoomScreen(
             ) {
                 itemsIndexed(messages) { i, message ->
                     Spacer(Modifier.height(8.dp))
-                    MessageRow(content = message, isMe = i % 2 == 0)
+                    MessageRow(content = message.content, isMe = message.sender_id == currentUserId)
                 }
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedTextField(
-                    modifier = Modifier.weight(1f),
-                    value = message.value,
-                    onValueChange = { newVal ->
-                        message.value = newVal
-                    },
-                    placeholder = {
-                        Text("Message")
-                    }
-                )
-                IconButton(
-                    onClick = {
-                        onMessageClicked(message.value)
-                        message.value = ""
-                    }, enabled = message.value.isNotBlank()
-                ) {
-                    Icon(Icons.AutoMirrored.Default.Send, "send")
-                }
-            }
+            UserInput(onMessageSent = onMessageClicked)
         }
     }
 }
@@ -150,6 +139,9 @@ fun ChatRoomScreen(
 @Composable
 fun ChatScreenPreview(modifier: Modifier = Modifier) {
     SupachatTheme {
-        ChatRoomScreen(profile = UserProfile(id = "", username = "username", avatar_url = null))
+        ChatRoomScreen(
+            currentUserId = "",
+            profile = UserProfile(id = "", username = "username", avatar_url = null)
+        )
     }
 }
