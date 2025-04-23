@@ -94,7 +94,6 @@ API_KEY=your-supabase-anon-key
 Feel free to open issues or pull requests to improve this project. Contributions are always welcome!
 
 ---
----
 
 ## 👤 Author
 
