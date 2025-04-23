@@ -40,7 +40,7 @@ class ChatRoomViewModel @Inject constructor(private val supabase: SupabaseClient
                 }
             }
                 .decodeList<Message>()
-                .also { _messages.value = it.reversed().toMutableList() }
+                .also { _messages.value = it.toMutableList() }
         }
     }
 

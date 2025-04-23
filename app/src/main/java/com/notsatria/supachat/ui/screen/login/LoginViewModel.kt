@@ -1,6 +1,5 @@
 package com.notsatria.supachat.ui.screen.login
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.notsatria.supachat.utils.Resource
@@ -12,6 +11,7 @@ import io.github.jan.supabase.auth.providers.builtin.Email
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,7 +31,7 @@ class LoginViewModel @Inject constructor(private val supabase: SupabaseClient) :
                 _loginState.send(Resource.Success("Login success"))
             } catch (e: Exception) {
                 _loginState.send(Resource.Error(e.message.toString()))
-                Log.e("LoginViewModel", "Error on login: ${e.message}")
+                Timber.e( "Error on login: ${e.message}")
             }
         }
     }

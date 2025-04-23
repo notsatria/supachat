@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserProfile(
     val id: String,
-    val username: String,
-    val avatar_url: String?,
+    val username: String = "",
+    val avatar_url: String? = null,
+    val fcm_token: String? = null
 )

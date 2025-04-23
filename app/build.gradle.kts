@@ -7,6 +7,7 @@ plugins {
     kotlin("plugin.serialization") version "2.0.21"
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.devtoolsKsp)
+    alias(libs.plugins.googleServices)
 }
 
 val properties = Properties().apply {
@@ -102,4 +103,8 @@ dependencies {
 
     // Data Store
     implementation(libs.androidx.datastore.preferences)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
 }
