@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -15,6 +16,7 @@ import androidx.navigation.navArgument
 import com.notsatria.supachat.navigation.Screen
 import com.notsatria.supachat.ui.screen.home.chat_list.ChatListRoute
 import com.notsatria.supachat.ui.screen.home.room_chat.ChatRoomRoute
+import com.notsatria.supachat.ui.screen.home.user_list.UserListRoute
 import com.notsatria.supachat.ui.screen.login.LoginRoute
 import com.notsatria.supachat.ui.screen.register.RegisterRoute
 import com.notsatria.supachat.ui.screen.register.verification.OTPVerificationRoute
@@ -88,7 +90,17 @@ fun SupachatApp(
                             otherUserId
                         )
                     )
-                })
+                },
+                navigateToLogin = {
+                    navController.navigateAndClearBackStack(
+                        route = Screen.Login.route,
+                        popUpTarget = Screen.ChatList.route
+                    )
+                },
+                navigateToUserList = {
+                    navController.navigate(Screen.UserList.route)
+                }
+            )
         }
 
         composable(
@@ -112,6 +124,13 @@ fun SupachatApp(
                 })
         }
 
+        composable(Screen.UserList.route) {
+            UserListRoute(
+                navigateBack = { navController.navigateUp() },
+                navigateToChatRoom = { conversationId, otherUserId ->
+                    navController.navigate(Screen.ChatRoom.createRoute(conversationId, otherUserId))
+                })
+        }
     }
 }
 

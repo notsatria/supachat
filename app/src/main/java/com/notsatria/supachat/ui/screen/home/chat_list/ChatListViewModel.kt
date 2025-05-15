@@ -7,6 +7,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.notsatria.supachat.data.model.Conversation
 import com.notsatria.supachat.data.model.Message
 import com.notsatria.supachat.data.model.UserProfile
+import com.notsatria.supachat.data.preferences.UserPreferences
 import com.notsatria.supachat.ui.model.ConversationUiModel
 import com.notsatria.supachat.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,18 +19,26 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import timber.log.Timber.Forest.d
 import javax.inject.Inject
 
 @HiltViewModel
-class ChatListViewModel @Inject constructor(private val supabase: SupabaseClient) : ViewModel() {
+class ChatListViewModel @Inject constructor(
+    private val supabase: SupabaseClient,
+    private val userPreferences: UserPreferences
+) : ViewModel() {
     private val _conversationsState =
         MutableStateFlow<Resource<List<ConversationUiModel>>>(Resource.Initial())
     val conversationsState = _conversationsState.asStateFlow()
+
+    private val _logoutState = MutableStateFlow(false)
+    val logoutState: Flow<Boolean> = _logoutState.asStateFlow()
 
     init {
         updateFcmTokenIfNeeded()
@@ -101,7 +110,7 @@ class ChatListViewModel @Inject constructor(private val supabase: SupabaseClient
                         d("Latest message: $latestMessage")
 
                         ConversationUiModel(
-                            conversationId = conversation.id,
+                            conversationId = conversation.id!!,
                             otherUser = otherUser.await(),
                             latestMessage = latestMessage.await()
                         )
@@ -112,6 +121,19 @@ class ChatListViewModel @Inject constructor(private val supabase: SupabaseClient
             } catch (e: Exception) {
                 _conversationsState.value = Resource.Error(e.message.toString())
                 Timber.e("Error on loadConversations: ${e.message}")
+            }
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            try {
+                supabase.auth.signOut()
+                _logoutState.value = true
+                userPreferences.setLoginState(false)
+            } catch (e: Exception) {
+                Timber.e("Error on logout: ${e.message}")
+                _logoutState.value = false
             }
         }
     }
