@@ -86,6 +86,19 @@ API_KEY=your-supabase-anon-key
 ---
 
 ## 📸 Screenshots
+### Authentication
+| *Register* | *Login* |
+|-|-|
+| <img src="https://github.com/user-attachments/assets/52c8a46d-2634-4767-b1c7-be038edc0e19" width="300px"/> | <img src="https://github.com/user-attachments/assets/522526df-234e-474b-a84c-0922bc47659e" width="300px"/> |
+| *OTP Verification* | *OTP Verification (Input Failed)* |
+| <img src="https://github.com/user-attachments/assets/432698fb-46c0-46c4-a7c0-72e8eadd5ffb" width="300px"/> | <img src="https://github.com/user-attachments/assets/b6ab8079-dfd9-41a7-b15c-f0632fe92c7d" width="300px"/> |
+
+### Chat
+| *Chat List* | *Room Chat* |
+|-|-|
+| <img src="https://github.com/user-attachments/assets/5bec82df-581c-4bfa-89c7-3040b83dfec8" width="300px"/> | <img src="https://github.com/user-attachments/assets/c6bfb64d-1c5b-4ddf-a2c2-32cb96021957" width="300px"/> |
+| *Chat Notification (Real Time)* | *Demo Video* |
+| <img src="https://github.com/user-attachments/assets/9f0a0fae-0b32-4f2b-b430-e166166d75b6" width="300px"/> | <img src="https://github.com/user-attachments/assets/022349ae-8297-49fd-9dbc-810283ffeabb" width="300px"/> |
 
 ---
 
